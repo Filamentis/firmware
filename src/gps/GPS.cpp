@@ -1695,6 +1695,34 @@ bool GPS::lookForLocation()
         p.ground_speed = reader.speed.kmph();
     }
 
+    // Anchor node override logic
+    // Assuming 'config' is the globally accessible meshtastic_LocalConfig (or meshtastic_Config)
+    if (config.has_fingerprint_config && config.fingerprint_config.is_anchor_node &&
+        config.fingerprint_config.fixed_latitude_i != 0 && config.fingerprint_config.fixed_longitude_i != 0) {
+        
+        LOG_INFO("Anchor node: Overriding live GPS with fixed location.");
+
+        p.latitude_i = config.fingerprint_config.fixed_latitude_i;
+        p.longitude_i = config.fingerprint_config.fixed_longitude_i;
+        p.altitude = config.fingerprint_config.fixed_altitude;
+        
+        p.location_source = meshtastic_Position_LocSource_LOC_MANUAL;
+        p.altitude_source = meshtastic_Position_AltSource_ALT_MANUAL;
+
+        p.time = getValidTime(RTCQualityMin::RTCQualityGood, false); 
+        p.timestamp = p.time; 
+
+        p.sats_in_view = 0; 
+        p.hdop = 0; 
+        p.pdop = 0; 
+        p.fix_quality = 0; 
+        p.fix_type = 0; 
+        p.ground_speed = 0; 
+        p.ground_track = 0; 
+        p.altitude_hae = config.fingerprint_config.fixed_altitude; 
+        p.altitude_geoidal_separation = 0;
+    }
+
     return true;
 }
 

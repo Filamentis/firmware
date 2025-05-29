@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package meshtastic;
+
+import "meshtastic/mesh.proto"; // For Position
+
+option csharp_namespace = "Meshtastic.Protobufs";
+option go_package = "github.com/meshtastic/go/generated";
+option java_outer_classname = "FingerprintProtos";
+option java_package = "com.geeksville.mesh";
+option swift_prefix = "";
+
+message BleScanResult {
+  bytes mac_address = 1; 
+  sint32 rssi = 2;
+}
+
+message BleScanBatch {
+  uint32 timestamp = 1; 
+  repeated BleScanResult results = 2;
+}
+
+message FingerprintRecord {
+  uint32 timestamp = 1;
+  Position location = 2; 
+
+  message LoRaSignal {
+    uint32 anchor_node_id = 1;
+    sint32 rssi = 2;
+    float snr = 3;
+  }
+  repeated LoRaSignal lora_signals = 3;
+  repeated BleScanResult ble_beacons = 4;
+}
+
+message FingerprintDatabase {
+  repeated FingerprintRecord records = 1;
+}

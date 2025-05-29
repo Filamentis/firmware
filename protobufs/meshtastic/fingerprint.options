@@ -1,0 +1,4 @@
+meshtastic.BleScanBatch.results max_count:16
+meshtastic.FingerprintRecord.lora_signals max_count:8
+meshtastic.FingerprintRecord.ble_beacons max_count:16
+meshtastic.FingerprintDatabase.records max_count:100 // Example, can be adjusted

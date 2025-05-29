@@ -9,6 +9,7 @@
 #include "memGet.h"
 #include "mesh/generated/meshtastic/config.pb.h"
 #include "mesh/generated/meshtastic/telemetry.pb.h"
+#include "modules/FingerprintModule.h" // Added for g_fingerprint_module
 #include <SPI.h>
 #include <map>
 #if defined(ARCH_ESP32) && !defined(CONFIG_IDF_TARGET_ESP32S2)
@@ -93,3 +94,6 @@ void scannerToSensorsMap(const std::unique_ptr<ScanI2CTwoWire> &i2cScanner, Scan
 
 // We default to 4MHz SPI, SPI mode 0
 extern SPISettings spiSettings;
+
+// Global module instances (can be NULL if not enabled)
+extern FingerprintModule *g_fingerprint_module;

@@ -1148,5 +1148,13 @@ message Config {
     SecurityConfig security = 8;
     SessionkeyConfig sessionkey = 9;
     DeviceUIConfig device_ui = 10;
+    FingerprintConfig fingerprint_config = 30; // Added for RSSI Fingerprinting
+  }
+
+  message FingerprintConfig {
+    bool is_anchor_node = 1;       // Is this device an anchor node?
+    sfixed32 fixed_latitude_i = 2;  // Fixed latitude (1e-7 degrees)
+    sfixed32 fixed_longitude_i = 3; // Fixed longitude (1e-7 degrees)
+    sint32 fixed_altitude = 4;      // Fixed altitude in meters
   }
 }

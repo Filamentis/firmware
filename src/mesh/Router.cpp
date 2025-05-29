@@ -11,6 +11,8 @@
 #include "mesh-pb-constants.h"
 #include "meshUtils.h"
 #include "modules/RoutingModule.h"
+#include "modules/FingerprintModule.h" // For FingerprintModule
+#include "main.h"                      // For g_fingerprint_module
 #if !MESHTASTIC_EXCLUDE_MQTT
 #include "mqtt/MQTT.h"
 #endif
@@ -651,6 +653,18 @@ void Router::handleReceived(meshtastic_MeshPacket *p, RxSource src)
 
     // call modules here
     if (!skipHandle) {
+        // Notify FingerprintModule about the received LoRa packet
+        if (g_fingerprint_module) {
+            // We pass 'p_encrypted' because it contains the original rx_rssi and rx_snr,
+            // which might be cleared or modified in 'p' after decoding.
+            // If p_encrypted isn't available or appropriate, ensure 'p' still has them.
+            // For now, assuming 'p' (which is the potentially decoded packet) still retains these fields accurately 
+            // or that they were copied to 'p_encrypted' which is what we should use.
+            // The prompt for FingerprintModule::onLoRaPacketReceived used `packet->from`, `packet->rx_rssi`, `packet->rx_snr`.
+            // `p_encrypted` would be the state of the packet as it arrived.
+            g_fingerprint_module->onLoRaPacketReceived(p_encrypted);
+        }
+
         MeshModule::callModules(*p, src);
 
 #if !MESHTASTIC_EXCLUDE_MQTT

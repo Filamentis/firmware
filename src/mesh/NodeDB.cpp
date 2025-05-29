@@ -665,11 +665,25 @@ void NodeDB::installDefaultConfig(bool preserveKey = false)
     config.display.wake_on_tap_or_motion = true;
 #endif
 
+    // Initialize FingerprintConfig defaults
+    config.has_fingerprint_config = true;
+    config.fingerprint_config.is_anchor_node = false;
+    config.fingerprint_config.fixed_latitude_i = 0;
+    config.fingerprint_config.fixed_longitude_i = 0;
+    config.fingerprint_config.fixed_altitude = 0;
+
 #if defined(ARCH_ESP32) && !MESHTASTIC_EXCLUDE_WIFI
     if (WiFiOTA::isUpdated()) {
         WiFiOTA::recoverConfig(&config.network);
     }
 #endif
+
+    // Initialize FingerprintConfig defaults
+    config.has_fingerprint_config = true;
+    config.fingerprint_config.is_anchor_node = false;
+    config.fingerprint_config.fixed_latitude_i = 0;
+    config.fingerprint_config.fixed_longitude_i = 0;
+    config.fingerprint_config.fixed_altitude = 0;
 
     initConfigIntervals();
 }
@@ -1327,6 +1341,7 @@ bool NodeDB::saveToDiskNoRetry(int saveWhat)
         config.has_network = true;
         config.has_bluetooth = true;
         config.has_security = true;
+        config.has_fingerprint_config = true; // Ensure 'has' flag is set for saving
 
         success &= saveProto(configFileName, meshtastic_LocalConfig_size, &meshtastic_LocalConfig_msg, &config);
     }

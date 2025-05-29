@@ -96,6 +96,10 @@
 #if !MESHTASTIC_EXCLUDE_DROPZONE
 #include "modules/DropzoneModule.h"
 #endif
+#include "modules/FingerprintModule.h" // Added for FingerprintModule
+
+// Global pointer for the FingerprintModule instance
+FingerprintModule *g_fingerprint_module = nullptr;
 
 /**
  * Create module instances here.  If you are adding a new module, you must 'new' it here (or somewhere else)
@@ -140,6 +144,7 @@ void setupModules()
 #if !MESHTASTIC_EXCLUDE_GENERIC_THREAD_MODULE
         new GenericThreadModule();
 #endif
+        g_fingerprint_module = new FingerprintModule(); // Added FingerprintModule and assign to global
         // Note: if the rest of meshtastic doesn't need to explicitly use your module, you do not need to assign the instance
         // to a global variable.
 

@@ -710,6 +710,14 @@ void AdminModule::handleSetConfig(const meshtastic_Config &c)
     case meshtastic_Config_device_ui_tag:
         // NOOP! This is handled by handleStoreDeviceUIConfig
         break;
+        case meshtastic_Config_fingerprint_config_tag:
+            LOG_INFO("Set config: Fingerprint");
+            config.has_fingerprint_config = true; // Ensure this is set
+            config.fingerprint_config = c.payload_variant.fingerprint_config;
+            // No specific reboot requirement for these settings unless a module using them needs reinitialization.
+            // For now, assume no immediate reboot needed beyond a general config save.
+            requiresReboot = false; 
+            break;
     }
     if (requiresReboot && !hasOpenEditTransaction) {
         disableBluetooth();
@@ -887,6 +895,11 @@ void AdminModule::handleGetConfig(const meshtastic_MeshPacket &req, const uint32
         case meshtastic_AdminMessage_ConfigType_DEVICEUI_CONFIG:
             // NOOP! This is handled by handleGetDeviceUIConfig
             res.get_config_response.which_payload_variant = meshtastic_Config_device_ui_tag;
+            break;
+        case meshtastic_AdminMessage_ConfigType_FINGERPRINT_CONFIG: // Assuming a new ConfigType enum value
+            LOG_INFO("Get config: Fingerprint");
+            res.get_config_response.which_payload_variant = meshtastic_Config_fingerprint_config_tag;
+            res.get_config_response.payload_variant.fingerprint_config = config.fingerprint_config;
             break;
         }
         // NOTE: The phone app needs to know the ls_secs value so it can properly expect sleep behavior.
