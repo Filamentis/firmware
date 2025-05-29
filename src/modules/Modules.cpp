@@ -97,6 +97,7 @@
 #include "modules/DropzoneModule.h"
 #endif
 #include "modules/RssiFingerprintingModule.h"
+#include "modules/SOSModule.h" // Added SOSModule include
 /**
  * Create module instances here.  If you are adding a new module, you must 'new' it here (or somewhere else)
  */
@@ -137,6 +138,16 @@ void setupModules()
 #if !MESHTASTIC_EXCLUDE_DROPZONE
         dropzoneModule = new DropzoneModule();
 #endif
+
+        // Instantiate RssiFingerprintingModule and ensure its global pointer is set via its constructor.
+        // No specific #if condition seems to gate RssiFingerprintingModule in existing includes,
+        // so instantiating it directly here.
+        // If it's meant to be conditional, an appropriate #if would be needed.
+        // This ensures ::rssiFingerprintingModule is valid for SOSModule.
+        if (!rssiFingerprintingModule) { // Check if it hasn't been created yet by some other means (defensive)
+            rssiFingerprintingModule = new RssiFingerprintingModule();
+        }
+
 #if !MESHTASTIC_EXCLUDE_GENERIC_THREAD_MODULE
         new GenericThreadModule();
 #endif
@@ -246,6 +257,8 @@ void setupModules()
         new RangeTestModule();
 #endif
 #endif
+        // Instantiate SOSModule HERE
+        sosModule = new SOSModule();
     } else {
 #if !MESHTASTIC_EXCLUDE_ADMIN
         adminModule = new AdminModule();
